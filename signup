@@ -1,0 +1,220 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'SignIn.ui'
+#
+# Created by: PyQt5 UI code generator 5.11.3
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+import mysql.connector
+from mysql.connector import errorcode
+class Ui_SignIn(object):
+
+    def clear(self):
+        self.UserName_lineEdit.clear()
+        self.IDCard_lineEdit.clear()
+        self.Email_lineEdit.clear()
+        self.Password_lineEdit.clear()
+        self.Confirm_lineEdit.clear()
+    def messagebox(self,title,message):
+        mess = QtWidgets.QMessageBox()
+        mess.setWindowTitle(title)
+        mess.setWindowIcon(QtGui.QIcon('icon.png'))
+        mess.setText(message)
+        mess.setStandardButtons(QtWidgets.QMessageBox.Ok)
+        mess.exec_()
+    def validation(self):
+        UserName = str(self.UserName_lineEdit.text())
+        IDCardNo = str(self.IDCard_lineEdit.text())
+        EmailID = str(self.Email_lineEdit.text())
+        Pass = str(self.Password_lineEdit.text())
+        PassConform = str(self.Confirm_lineEdit.text())
+        if not UserName:
+            self.messagebox("Unsuccessfull", "Please Enter the User Name")
+        elif not IDCardNo:
+            self.messagebox("Unsuccessfull", "Please Enter the ID Card No.")
+        elif not EmailID:
+            self.messagebox("Unsuccessfull", "Please Enter the Email ID")
+        elif not Pass:
+            self.messagebox("Unsuccessfull", "Please Enter the Password")
+        elif not PassConform:
+            self.messagebox("Unsuccessfull", "Please Enter the Password Conformation")
+            if not  PassConform == Pass:
+                self.messagebox("Unsuccessfull", "your Password Conformation is Failed")
+            else:
+                pass
+        else:
+            pass
+
+    #=======================================Signup code================================================#
+    def SignUp(self):
+
+        UserName = str(self.UserName_lineEdit.text())
+        IDCardNo = str(self.IDCard_lineEdit.text())
+        EmailID = str(self.Email_lineEdit.text())
+        Pass = str(self.Password_lineEdit.text())
+        ConformPass = str(self.Confirm_lineEdit.text())
+        if not UserName:
+            self.messagebox("Unsuccessfull", "Please Enter the User Name")
+        elif not IDCardNo:
+            #self.IDCard_lineEdit.setStyleSheet("background-color: red;")
+            self.messagebox("Unsuccessfull", "Please Enter the ID Card No.")
+        elif not EmailID:
+            #self.IDCard_lineEdit.setStyleSheet("background-color:green;")
+            self.messagebox("Unsuccessfull", "Please Enter the Email ID")
+
+        elif not Pass:
+            self.messagebox("Unsuccessfull", "Please Enter the Password")
+        elif not ConformPass:
+            self.messagebox("Unsuccessfull", "Please Enter the Password Conformation")
+        elif not self.Password_lineEdit.text()== self.Confirm_lineEdit.text():
+                self.messagebox("Unsuccessfull", "your Password Conformation is Failed")
+
+        else:
+          try:
+           cnx = mysql.connector.connect(user='root', password='root', host='localhost', database='ChequeAnalyzer')
+           cursor = cnx.cursor()
+
+
+           Sign = ( "INSERT INTO signup " "(User_Name , Email , ID_Card_No , Password , Conform_Password ) " " VALUES "
+                 "('%s','%s','%s','%s','%s')" % (''.join(UserName), ''.join(EmailID), ''.join(IDCardNo),
+                                                 ''.join(Pass),''.join(ConformPass)))
+           cursor.execute(Sign)
+           cnx.commit()
+           cursor.close()
+           cnx.close()
+          except mysql.connector.Error as err:
+           if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+               print("Something is wrong with your user name or password")
+           elif err.errno == errorcode.ER_BAD_DB_ERROR:
+               print("Database does not exist")
+           else:
+               print(err)
+          else:
+            cnx.close()
+            self.clear()
+#=======================================================#
+    def exit(self):
+        if self.pushButton.clicked:
+            self.messagebox("Notification", "Are you sure to Exit ! ")
+            LoginWindow.close()
+        else:
+            pass
+
+    def setupUi(self, SignIn):
+        SignIn.setObjectName("SignIn")
+        SignIn.resize(680, 560)
+        font = QtGui.QFont()
+        font.setFamily("Calibri")
+        font.setPointSize(14)
+        SignIn.setFont(font)
+        self.centralwidget = QtWidgets.QWidget(SignIn)
+        self.centralwidget.setObjectName("centralwidget")
+        self.label = QtWidgets.QLabel(self.centralwidget)
+        self.label.setGeometry(QtCore.QRect(160, -20, 391, 211))
+        self.label.setStyleSheet("image: url(:/newPrefix/icon.png);")
+        self.label.setText("")
+        self.label.setObjectName("label")
+        self.label_2 = QtWidgets.QLabel(self.centralwidget)
+        self.label_2.setGeometry(QtCore.QRect(180, 170, 335, 31))
+        font = QtGui.QFont()
+        font.setPointSize(18)
+        self.label_2.setFont(font)
+        self.label_2.setObjectName("label_2")
+        self.label_3 = QtWidgets.QLabel(self.centralwidget)
+        self.label_3.setGeometry(QtCore.QRect(140, 220, 91, 31))
+        self.label_3.setObjectName("label_3")
+        self.UserName_lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.UserName_lineEdit.setGeometry(QtCore.QRect(230, 220, 291, 31))
+        self.UserName_lineEdit.setObjectName("UserName_lineEdit")
+        self.label_4 = QtWidgets.QLabel(self.centralwidget)
+        self.label_4.setGeometry(QtCore.QRect(140, 260, 91, 31))
+        self.label_4.setObjectName("label_4")
+        self.IDCard_lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.IDCard_lineEdit.setGeometry(QtCore.QRect(230, 260, 291, 31))
+        self.IDCard_lineEdit.setObjectName("IDCard_lineEdit")
+        self.IDCard_lineEdit.setPlaceholderText("00000-0000000-0")
+        self.label_5 = QtWidgets.QLabel(self.centralwidget)
+        self.label_5.setGeometry(QtCore.QRect(180, 300, 47, 31))
+        self.label_5.setObjectName("label_5")
+        self.Email_lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.Email_lineEdit.setGeometry(QtCore.QRect(230, 300, 291, 31))
+        self.Email_lineEdit.setObjectName("Email_lineEdit")
+        self.label_6 = QtWidgets.QLabel(self.centralwidget)
+        self.label_6.setGeometry(QtCore.QRect(140, 340, 81, 31))
+        self.label_6.setObjectName("label_6")
+        self.Password_lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.Password_lineEdit.setGeometry(QtCore.QRect(230, 340, 291, 31))
+        self.Password_lineEdit.setAcceptDrops(True)
+        self.Password_lineEdit.setAccessibleDescription("")
+        self.Password_lineEdit.setInputMask("")
+        self.Password_lineEdit.setText("")
+        self.Password_lineEdit.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.Password_lineEdit.setPlaceholderText("")
+        self.Password_lineEdit.setObjectName("Password_lineEdit")
+        self.label_7 = QtWidgets.QLabel(self.centralwidget)
+        self.label_7.setGeometry(QtCore.QRect(160, 380, 71, 31))
+        self.label_7.setObjectName("label_7")
+        self.Confirm_lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.Confirm_lineEdit.setGeometry(QtCore.QRect(230, 380, 291, 31))
+        self.Confirm_lineEdit.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.Confirm_lineEdit.setObjectName("Confirm_lineEdit")
+        self.Signin_pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.Signin_pushButton.setGeometry(QtCore.QRect(280, 430, 91, 31))
+        self.Signin_pushButton.setObjectName("Signin_pushButton")
+        self.Signin_pushButton.clicked.connect(self.SignUp)
+
+        self.Cancel_pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.Cancel_pushButton.setGeometry(QtCore.QRect(380, 430, 91, 31))
+        self.Cancel_pushButton.setObjectName("Cancel_pushButton")
+        self.Cancel_pushButton.clicked.connect(self.clear)
+        self.GoBack_pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.GoBack_pushButton.setGeometry(QtCore.QRect(0, 0, 101, 31))
+        self.GoBack_pushButton.setObjectName("GoBack_pushButton")
+        self.Exit_pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.Exit_pushButton.setGeometry(QtCore.QRect(110, 0, 101, 31))
+        self.Exit_pushButton.setObjectName("Exit_pushButton")
+        #self.Exit_pushButton.clicked.connect(self.exit)
+        self.Exit_pushButton.clicked.connect(QtCore.QCoreApplication.instance().quit)
+
+        SignIn.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(SignIn)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 680, 21))
+        self.menubar.setObjectName("menubar")
+        SignIn.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(SignIn)
+        self.statusbar.setObjectName("statusbar")
+        SignIn.setStatusBar(self.statusbar)
+
+        self.retranslateUi(SignIn)
+        QtCore.QMetaObject.connectSlotsByName(SignIn)
+
+    def retranslateUi(self, SignIn):
+        _translate = QtCore.QCoreApplication.translate
+        SignIn.setWindowTitle(_translate("SignIn", "Sign Up"))
+        SignIn.setWindowIcon(QtGui.QIcon('icon.png'))
+        self.label_2.setText(_translate("SignIn", "Welcome to User Sign Up Window"))
+        self.label_3.setText(_translate("SignIn", "User Name"))
+        self.label_4.setText(_translate("SignIn", "ID Card No."))
+        self.label_5.setText(_translate("SignIn", "Email"))
+        self.label_6.setText(_translate("SignIn", "Password"))
+        self.label_7.setText(_translate("SignIn", "Confirm "))
+        self.Signin_pushButton.setText(_translate("SignIn", "Sign Up"))
+        self.Cancel_pushButton.setText(_translate("SignIn", "Cancel"))
+        self.GoBack_pushButton.setText(_translate("SignIn", "Go Back"))
+        self.Exit_pushButton.setText(_translate("SignIn", "Exit"))
+
+import ResourceFile_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    SignIn = QtWidgets.QMainWindow()
+    ui = Ui_SignIn()
+    ui.setupUi(SignIn)
+    SignIn.setWindowTitle("Sign Up")
+
+    SignIn.show()
+    sys.exit(app.exec_())
+
